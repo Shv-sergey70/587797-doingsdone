@@ -133,13 +133,13 @@ function countTasksInProject($arTasks, $project_name) {
                 </div>
 
                 <table class="tasks">
-                    <?php foreach($tasks_items as $value):?>
-                      <?if($value['isDone'] === 'Нет'):?>
-                        <tr class="tasks__item task">
+                    <?php foreach ($tasks_items as $value):?>
+                      <?if ($value['isDone'] === 'Нет' || ($value['isDone'] === 'Да' && $show_complete_tasks)):?>
+                        <tr class="tasks__item task <?=($value['isDone'] === 'Да' && $show_complete_tasks)?'task--completed':''?>">
                             <td class="task__select">
                                 <label class="checkbox task__checkbox">
-                                    <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
-                                    <span class="checkbox__text"><?=$value['name']?></span>
+                                    <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" <?=($value['isDone'] === 'Да' && $show_complete_tasks)?'checked':'value="1"'?>>
+                                    <span class="checkbox__text"><?=htmlspecialchars($value['name'], ENT_QUOTES)?></span>
                                 </label>
                             </td>
 
@@ -147,26 +147,8 @@ function countTasksInProject($arTasks, $project_name) {
                                 <a class="download-link" href="#">Home.psd</a>
                             </td>
 
-                            <td class="task__date"><?=$value['finish_date']?></td>
+                            <td class="task__date"><?=htmlspecialchars($value['finish_date'], ENT_QUOTES)?></td>
                         </tr>
-                      <?elseif($value['isDone'] === 'Да'):?>
-                    <!--показывать следующий тег <tr/>, если переменная $show_complete_tasks равна единице-->
-                        <?if($show_complete_tasks):?>
-                            <tr class="tasks__item task task--completed">
-                                <td class="task__select">
-                                    <label class="checkbox task__checkbox">
-                                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" checked>
-                                        <span class="checkbox__text"><?=$value['name']?></span>
-                                    </label>
-                                </td>
-
-                                <td class="task__file">
-                                    <a class="download-link" href="#">Home.psd</a>
-                                </td>
-
-                                <td class="task__date"><?=$value['finish_date']?></td>
-                            </tr>
-                        <?endif;?>
                       <?endif;?>
                     <?endforeach;?>
                 </table>
