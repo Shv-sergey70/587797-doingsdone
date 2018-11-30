@@ -100,7 +100,7 @@ function countTasksInProject($arTasks, $project_name) {
                                 <a class="main-navigation__list-item-link" href="#"><?=$value?></a>
                                 <span class="main-navigation__list-item-count"><?=countTasksInProject($tasks_items, $value)?></span>
                             </li>
-                        <?endforeach;?>
+                        <?php endforeach;?>
                     </ul>
                 </nav>
 
@@ -134,7 +134,7 @@ function countTasksInProject($arTasks, $project_name) {
 
                 <table class="tasks">
                     <?php foreach ($tasks_items as $value):?>
-                      <?if ($value['isDone'] === 'Нет' || ($value['isDone'] === 'Да' && $show_complete_tasks)):?>
+                      <?php if ($value['isDone'] === 'Нет' || ($value['isDone'] === 'Да' && $show_complete_tasks)):?>
                         <tr class="tasks__item task <?=($value['isDone'] === 'Да' && $show_complete_tasks)?'task--completed':''?>">
                             <td class="task__select">
                                 <label class="checkbox task__checkbox">
@@ -149,8 +149,8 @@ function countTasksInProject($arTasks, $project_name) {
 
                             <td class="task__date"><?=htmlspecialchars($value['finish_date'], ENT_QUOTES)?></td>
                         </tr>
-                      <?endif;?>
-                    <?endforeach;?>
+                      <?php endif;?>
+                    <?php endforeach;?>
                 </table>
             </main>
         </div>
@@ -197,7 +197,7 @@ function countTasksInProject($arTasks, $project_name) {
     </div>
 </footer>
 
-<script src="flatpickr.js"></script>
-<script src="script.js"></script>
-</body>
+        <script src="flatpickr.js"></script>
+        <script src="script.js"></script>
+    </body>
 </html>
