@@ -24,7 +24,7 @@
 <table class="tasks">
     <?php foreach ($tasks_items as $value):?>
         <?php if ($value['isDone'] === 'Нет' || ($value['isDone'] === 'Да' && $show_complete_tasks)):?>
-            <tr class="tasks__item task <?=($value['isDone'] === 'Да' && $show_complete_tasks)?'task--completed':''?>">
+            <tr class="tasks__item task <?=($value['isDone'] === 'Да' && $show_complete_tasks)?'task--completed':''?> <?=isImportantTask($value['finish_date'])?'task--important':''?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
                         <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" <?=($value['isDone'] === 'Да' && $show_complete_tasks)?'checked':'value="1"'?>>
