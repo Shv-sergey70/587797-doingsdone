@@ -26,5 +26,6 @@ register_datetime DATETIME,
 email VARCHAR(100),
 name CHAR(150),
 password CHAR(150),
-contacts TEXT
+contacts TEXT,
+UNIQUE(`email`)
 );
