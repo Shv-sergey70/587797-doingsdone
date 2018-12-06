@@ -1,56 +1,63 @@
 <?php
 require_once('functions.php');
+
+$mysqli = new mysqli("localhost", "root", "root", "DOINGSDONE");
+
+if ($mysqli->connect_error) {
+    die('Ошибка подключения ('.$mysqli->connect_errno.') '.$mysqli->connect_error);
+}
+
+//$city = $mysqli->real_escape_string($city);
+$user_id = intval(1);
+//Запрашиваем проекты пользователя по его ID
+
+$projects_list_query = "SELECT name AS NAME FROM projects WHERE author_id = $user_id";
+if (!$result = $mysqli->query($projects_list_query)) {
+    die('Ошибка в запросе '.$projects_list_query.' - '.$mysqli->error);
+}
+$projects_items = [];
+while ($res = $result->fetch_assoc()) {
+    $projects_items[] = $res;
+}
+
+//Запрашиваем задачи пользователя по его ID
+$tasks_list_query = "SELECT 
+tasks.name AS TASK_NAME,
+tasks.deadline_datetime AS TASK_DEADLINE,
+tasks.status AS TASK_STATUS,
+projects.name AS PROJECT_NAME
+FROM tasks 
+JOIN projects
+ON tasks.project_id = projects.id
+WHERE tasks.author_id = $user_id";
+
+if (!$result = $mysqli->query($tasks_list_query)) {
+    die('Ошибка в запросе '.$tasks_list_query.' - '.$mysqli->error);
+}
+$tasks_items = [];
+while ($res = $result->fetch_assoc()) {
+    $tasks_items[] = $res;
+}
+//echo "<pre>";
+//var_dump($tasks_items);
+//echo "</pre>";
+
+$mysqli->close();
+//Считаем задачи в проектах
+foreach ($projects_items as $key => $projects_item) {
+    $projects_items[$key]['TASKS_COUNT'] = countTasksInProject($tasks_items, $projects_item['NAME'], 'PROJECT_NAME');
+}
+
 // показывать или нет выполненные задачи
 $show_complete_tasks = rand(0, 1);
-$menu_items = ['Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
-$tasks_items = [
-    [
-        'name' => 'Собеседование в IT компании',
-        'finish_date' => '3.12.2018',
-        'category_name' => 'Работа',
-        'isDone' => 'Нет'
-    ],
-    [
-        'name' => 'Выполнить тестовое задание',
-        'finish_date' => '25.12.2018',
-        'category_name' => 'Работа',
-        'isDone' => 'Нет'
-    ],
-    [
-        'name' => 'Сделать задание первого раздела',
-        'finish_date' => '21.12.2018',
-        'category_name' => 'Учеба',
-        'isDone' => 'Да'
-    ],
-    [
-        'name' => 'Встреча с другом',
-        'finish_date' => '22.12.2018',
-        'category_name' => 'Входящие',
-        'isDone' => 'Нет'
-    ],
-    [
-        'name' => 'Купить корм для кота',
-        'finish_date' => 'Нет',
-        'category_name' => 'Домашние дела',
-        'isDone' => 'Нет'
-    ],
-    [
-        'name' => 'Заказать пиццу',
-        'finish_date' => 'Нет',
-        'category_name' => 'Домашние дела',
-        'isDone' => 'Нет'
-    ]
-];
 
 $content = include_template('index.php', [
     'tasks_items' => $tasks_items,
-    'menu_items' => $menu_items,
     'show_complete_tasks' => $show_complete_tasks
 ]);
 
 echo include_template('layout.php', [
-    'tasks_items' => $tasks_items,
-    'menu_items' => $menu_items,
+    'menu_items' => $projects_items,
     'title' => 'Дела в порядке',
     'content' => $content
 ]);

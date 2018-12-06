@@ -23,12 +23,12 @@
 
 <table class="tasks">
     <?php foreach ($tasks_items as $value):?>
-        <?php if ($value['isDone'] === 'Нет' || ($value['isDone'] === 'Да' && $show_complete_tasks)):?>
-            <tr class="tasks__item task <?=($value['isDone'] === 'Да' && $show_complete_tasks)?'task--completed':''?> <?=isImportantTask($value['finish_date'])?'task--important':''?>">
+        <?php if (!$value['TASK_STATUS'] || (!!$value['TASK_STATUS'] && $show_complete_tasks)):?>
+            <tr class="tasks__item task <?=(!!$value['TASK_STATUS'] && $show_complete_tasks)?'task--completed':''?> <?=isImportantTask($value['TASK_DEADLINE'])?'task--important':''?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
-                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" <?=($value['isDone'] === 'Да' && $show_complete_tasks)?'checked':'value="1"'?>>
-                        <span class="checkbox__text"><?=htmlspecialchars($value['name'], ENT_QUOTES)?></span>
+                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" <?=(!!$value['TASK_STATUS'] && $show_complete_tasks)?'checked':'value="1"'?>>
+                        <span class="checkbox__text"><?=htmlspecialchars($value['TASK_NAME'], ENT_QUOTES)?></span>
                     </label>
                 </td>
 
@@ -36,7 +36,7 @@
                     <a class="download-link" href="#">Home.psd</a>
                 </td>
 
-                <td class="task__date"><?=htmlspecialchars($value['finish_date'], ENT_QUOTES)?></td>
+                <td class="task__date"><?=htmlspecialchars($value['TASK_DEADLINE'], ENT_QUOTES)?></td>
             </tr>
         <?php endif;?>
     <?php endforeach;?>

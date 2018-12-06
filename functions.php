@@ -17,10 +17,10 @@ function include_template($name, $data) {
     return $result;
 }
 
-function countTasksInProject($arTasks, $project_name) {
+function countTasksInProject($arTasks, $project_name, $label) {
     $tasks_num = 0;
     foreach ($arTasks as $value) {
-        if ($value['category_name'] === $project_name) {
+        if ($value[$label] === $project_name) {
             $tasks_num++;
         }
     }

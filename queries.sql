@@ -2,7 +2,7 @@ USE DOINGSDONE;
 
 INSERT INTO projects SET id = 1, name = 'Входящие', author_id = 1;
 INSERT INTO projects SET id = 2, name = 'Учёба', author_id = 2;
-INSERT INTO projects SET id = 3, name = 'Работа', author_id = 2;
+INSERT INTO projects SET id = 3, name = 'Работа', author_id = 1;
 INSERT INTO projects SET id = 4, name = 'Домашние дела', author_id = 1;
 INSERT INTO projects SET id = 5, name = 'Авто', author_id = 3;
 
