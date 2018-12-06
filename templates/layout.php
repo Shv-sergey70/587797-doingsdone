@@ -44,7 +44,7 @@
                     <ul class="main-navigation__list">
                         <?php foreach($menu_items as $value):?>
                             <li class="main-navigation__list-item">
-                                <a class="main-navigation__list-item-link" href="#"><?=$value['NAME']?></a>
+                                <a class="main-navigation__list-item-link" href="?id=<?=$value['ID']?>"><?=$value['NAME']?></a>
                                 <span class="main-navigation__list-item-count"><?=$value['TASKS_COUNT']?></span>
                             </li>
                         <?php endforeach;?>

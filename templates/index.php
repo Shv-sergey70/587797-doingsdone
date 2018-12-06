@@ -22,7 +22,7 @@
 </div>
 
 <table class="tasks">
-    <?php foreach ($tasks_items as $value):?>
+    <?php foreach ($current_tasks_items as $value):?>
         <?php if (!$value['TASK_STATUS'] || (!!$value['TASK_STATUS'] && $show_complete_tasks)):?>
             <tr class="tasks__item task <?=(!!$value['TASK_STATUS'] && $show_complete_tasks)?'task--completed':''?> <?=isImportantTask($value['TASK_DEADLINE'])?'task--important':''?>">
                 <td class="task__select">
