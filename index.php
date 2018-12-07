@@ -5,7 +5,7 @@ $mysqli = new mysqli("localhost", "root", "root", "DOINGSDONE");
 if ($mysqli->connect_error) {
     die('Ошибка подключения ('.$mysqli->connect_errno.') '.$mysqli->connect_error);
 }
-
+$USER = true;
 //$city = $mysqli->real_escape_string($city);
 $user_id = intval(1);
 
@@ -104,5 +104,6 @@ $content = include_template('index.php', [
 echo include_template('layout.php', [
     'menu_items' => $menu_items,
     'title' => 'Дела в порядке',
-    'content' => $content
+    'content' => $content,
+    'user' => $USER
 ]);

@@ -18,41 +18,53 @@
             <a href="/">
                 <img src="img/logo.png" width="153" height="42" alt="Логотип Дела в порядке">
             </a>
+            <?php if($user):?>
+                <div class="main-header__side">
+                    <a class="main-header__side-item button button--plus" href="/add_task.php">Добавить задачу</a>
 
-            <div class="main-header__side">
-                <a class="main-header__side-item button button--plus" href="/add_task.php">Добавить задачу</a>
+                    <div class="main-header__side-item user-menu">
+                        <div class="user-menu__image">
+                            <img src="img/user-pic.jpg" width="40" height="40" alt="Пользователь">
+                        </div>
 
-                <div class="main-header__side-item user-menu">
-                    <div class="user-menu__image">
-                        <img src="img/user-pic.jpg" width="40" height="40" alt="Пользователь">
-                    </div>
+                        <div class="user-menu__data">
+                            <p>Константин</p>
 
-                    <div class="user-menu__data">
-                        <p>Константин</p>
-
-                        <a href="#">Выйти</a>
+                            <a href="#">Выйти</a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php else:?>
+                <div class="main-header__side">
+                    <a class="main-header__side-item button button--transparent" href="form-authorization.html">Войти</a>
+                </div>
+            <?php endif;?>
         </header>
 
         <div class="content">
             <section class="content__side">
-                <h2 class="content__side-heading">Проекты</h2>
-                <nav class="main-navigation">
-                    <ul class="main-navigation__list">
-                        <?php foreach($menu_items as $value):?>
-                            <li class="main-navigation__list-item">
-                                <a class="main-navigation__list-item-link" href="/index.php?id=<?=$value['ID']?>"><?=$value['NAME']?></a>
-                                <span class="main-navigation__list-item-count"><?=$value['TASKS_COUNT']?></span>
-                            </li>
-                        <?php endforeach;?>
-                    </ul>
-                </nav>
+                <?php if($user):?>
+                    <h2 class="content__side-heading">Проекты</h2>
+                    <nav class="main-navigation">
+                        <ul class="main-navigation__list">
+                            <?php foreach($menu_items as $value):?>
+                                <li class="main-navigation__list-item">
+                                    <a class="main-navigation__list-item-link" href="/index.php?id=<?=$value['ID']?>"><?=$value['NAME']?></a>
+                                    <span class="main-navigation__list-item-count"><?=$value['TASKS_COUNT']?></span>
+                                </li>
+                            <?php endforeach;?>
+                        </ul>
+                    </nav>
 
-                <a class="button button--transparent button--plus content__side-button open-modal"
-                   href="javascript:;" target="project_add">Добавить проект</a>
+                    <a class="button button--transparent button--plus content__side-button open-modal"
+                       href="javascript:;" target="project_add">Добавить проект</a>
+                <?php else:?>
+                    <p class="content__side-info">Если у вас уже есть аккаунт, авторизуйтесь на сайте</p>
+
+                    <a class="button button--transparent content__side-button" href="form-authorization.html">Войти</a>
+                <?php endif;?>
             </section>
+
 
             <main class="content__main">
                 <?=$content?>
@@ -69,8 +81,10 @@
             <p>Веб-приложение для удобного ведения списка дел.</p>
         </div>
 
-        <a class="main-footer__button button button--plus"
-           href="/add_task.php">Добавить задачу</a>
+        <?php if($user):?>
+            <a class="main-footer__button button button--plus"
+               href="/add_task.php">Добавить задачу</a>
+        <?php endif;?>
 
         <div class="main-footer__social social">
             <span class="visually-hidden">Мы в соцсетях:</span>
