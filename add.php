@@ -1,6 +1,7 @@
 <?php
 require_once('functions.php');
 
+
 $mysqli = new mysqli("localhost", "root", "root", "DOINGSDONE");
 if ($mysqli->connect_error) {
     die('Ошибка подключения ('.$mysqli->connect_errno.') '.$mysqli->connect_error);
@@ -47,58 +48,8 @@ foreach ($menu_items as $key => $menu_item) {
 }
 
 
-//Запрашиваем задачи в выбранном проекте
-$selected_menu_isset = false;
-$current_tasks_items = [];
-if (!empty($_GET['id'])) {
-    $selected_menu_item_id = intval($_GET['id']);
-    foreach ($menu_items as $menu_item) {
-        if ((int)$menu_item['ID'] === $selected_menu_item_id) {
-            $selected_menu_isset = true;
-        }
-    }
-    if (!$selected_menu_isset) {
-        header("HTTP/1.x 404 Not Found");
-        die();
-    }
-} else {
-    $current_tasks_items = $tasks_items;
-}
-if ($selected_menu_isset) {
-    //Запрашиваем задачи пользователя по его ID и ID проекта для вывода задач
-    $current_tasks_list_query = "SELECT 
-        tasks.name AS TASK_NAME,
-        tasks.deadline_datetime AS TASK_DEADLINE,
-        tasks.status AS TASK_STATUS,
-        projects.name AS PROJECT_NAME
-        FROM tasks 
-        JOIN projects
-        ON tasks.project_id = projects.id
-        WHERE
-        tasks.project_id = $selected_menu_item_id AND
-        tasks.author_id = $user_id";
-    if (!$result = $mysqli->query($current_tasks_list_query)) {
-        die('Ошибка в запросе '.$current_tasks_list_query.' - '.$mysqli->error);
-    }
-    while ($res = $result->fetch_assoc()) {
-        $current_tasks_items[] = $res;
-    }
-}
-//echo "<pre>";
-//var_dump($tasks_items);
-//echo "</pre>";
 
-
-$mysqli->close();
-
-
-// показывать или нет выполненные задачи
-$show_complete_tasks = rand(0, 1);
-
-
-$content = include_template('index.php', [
-    'current_tasks_items' => $current_tasks_items,
-    'show_complete_tasks' => $show_complete_tasks
+$content = include_template('add_task.php', [
 ]);
 
 echo include_template('layout.php', [

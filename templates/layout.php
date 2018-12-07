@@ -15,13 +15,12 @@
 <div class="page-wrapper">
     <div class="container container--with-sidebar">
         <header class="main-header">
-            <a href="#">
+            <a href="/">
                 <img src="img/logo.png" width="153" height="42" alt="Логотип Дела в порядке">
             </a>
 
             <div class="main-header__side">
-                <a class="main-header__side-item button button--plus open-modal" href="javascript:;"
-                   target="task_add">Добавить задачу</a>
+                <a class="main-header__side-item button button--plus" href="/add_task.php">Добавить задачу</a>
 
                 <div class="main-header__side-item user-menu">
                     <div class="user-menu__image">
@@ -44,7 +43,7 @@
                     <ul class="main-navigation__list">
                         <?php foreach($menu_items as $value):?>
                             <li class="main-navigation__list-item">
-                                <a class="main-navigation__list-item-link" href="?id=<?=$value['ID']?>"><?=$value['NAME']?></a>
+                                <a class="main-navigation__list-item-link" href="/index.php?id=<?=$value['ID']?>"><?=$value['NAME']?></a>
                                 <span class="main-navigation__list-item-count"><?=$value['TASKS_COUNT']?></span>
                             </li>
                         <?php endforeach;?>
@@ -70,8 +69,8 @@
             <p>Веб-приложение для удобного ведения списка дел.</p>
         </div>
 
-        <a class="main-footer__button button button--plus open-modal" target="task_add"
-           href="javascript:;">Добавить задачу</a>
+        <a class="main-footer__button button button--plus"
+           href="/add_task.php">Добавить задачу</a>
 
         <div class="main-footer__social social">
             <span class="visually-hidden">Мы в соцсетях:</span>

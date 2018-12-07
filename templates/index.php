@@ -24,7 +24,7 @@
 <table class="tasks">
     <?php foreach ($current_tasks_items as $value):?>
         <?php if (!$value['TASK_STATUS'] || (!!$value['TASK_STATUS'] && $show_complete_tasks)):?>
-            <tr class="tasks__item task <?=(!!$value['TASK_STATUS'] && $show_complete_tasks)?'task--completed':''?> <?=isImportantTask($value['TASK_DEADLINE'])?'task--important':''?>">
+            <tr class="tasks__item task <?=(!!$value['TASK_STATUS'] && $show_complete_tasks)?'task--completed':''?> <?=isImportantTask($value['TASK_DEADLINE']??'')?'task--important':''?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
                         <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" <?=(!!$value['TASK_STATUS'] && $show_complete_tasks)?'checked':'value="1"'?>>
@@ -36,7 +36,7 @@
                     <a class="download-link" href="#">Home.psd</a>
                 </td>
 
-                <td class="task__date"><?=htmlspecialchars($value['TASK_DEADLINE'], ENT_QUOTES)?></td>
+                <td class="task__date"><?=htmlspecialchars($value['TASK_DEADLINE']??'', ENT_QUOTES)?></td>
             </tr>
         <?php endif;?>
     <?php endforeach;?>

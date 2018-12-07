@@ -39,26 +39,29 @@ document.body.addEventListener('click', function (event) {
 
 var $checkbox = document.getElementsByClassName('show_completed')[0];
 
-$checkbox.addEventListener('change', function (event) {
-  var is_checked = +event.target.checked;
+if ($checkbox !== undefined) {
+  $checkbox.addEventListener('change', function (event) {
+    var is_checked = +event.target.checked;
 
-  window.location = '/index.php?show_completed=' + is_checked;
-});
+    window.location = '/index.php?show_completed=' + is_checked;
+  });
+}
 
 var $taskCheckboxes = document.getElementsByClassName('tasks')[0];
 
-$taskCheckboxes.addEventListener('change', function (event) {
-  if (event.target.classList.contains('task__checkbox')) {
-    var el = event.target;
+if ($taskCheckboxes !== undefined) {
+  $taskCheckboxes.addEventListener('change', function (event) {
+    if (event.target.classList.contains('task__checkbox')) {
+      var el = event.target;
 
-    var is_checked = +el.checked;
-    var task_id = el.getAttribute('value');
+      var is_checked = +el.checked;
+      var task_id = el.getAttribute('value');
 
-    var url = '/index.php?task_id=' + task_id + '&check=' + is_checked;
-    window.location = url;
-  }
-});
-
+      var url = '/index.php?task_id=' + task_id + '&check=' + is_checked;
+      window.location = url;
+    }
+  });
+}
 flatpickr('#date', {
   enableTime: true,
   dateFormat: "Y-m-d H:i",
