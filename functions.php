@@ -37,3 +37,10 @@ function isImportantTask(string $deadline): bool {
         return false;
     }
 }
+
+function isAuth(?array $user) {
+    if (!$user) {
+        header('Location: /guest.php');
+        die();
+    }
+}

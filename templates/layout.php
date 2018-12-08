@@ -28,15 +28,15 @@
                         </div>
 
                         <div class="user-menu__data">
-                            <p>Константин</p>
+                            <p><?=$user['name']?></p>
 
-                            <a href="#">Выйти</a>
+                            <a href="/logout.php">Выйти</a>
                         </div>
                     </div>
                 </div>
             <?php else:?>
                 <div class="main-header__side">
-                    <a class="main-header__side-item button button--transparent" href="form-authorization.html">Войти</a>
+                    <a class="main-header__side-item button button--transparent" href="login.php">Войти</a>
                 </div>
             <?php endif;?>
         </header>
@@ -61,7 +61,7 @@
                 <?php else:?>
                     <p class="content__side-info">Если у вас уже есть аккаунт, авторизуйтесь на сайте</p>
 
-                    <a class="button button--transparent content__side-button" href="form-authorization.html">Войти</a>
+                    <a class="button button--transparent content__side-button" href="/login.php">Войти</a>
                 <?php endif;?>
             </section>
 

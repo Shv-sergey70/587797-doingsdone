@@ -1,6 +1,10 @@
 <?php
 require_once('functions.php');
 
+session_start();
+$USER = isset($_SESSION['USER'])?$_SESSION['USER']:null;
+isAuth($USER);
+
 $mysqli = new mysqli("localhost", "root", "root", "DOINGSDONE");
 if ($mysqli->connect_error) {
     die('Ошибка подключения ('.$mysqli->connect_errno.') '.$mysqli->connect_error);
@@ -120,4 +124,5 @@ echo include_template('layout.php', [
     'menu_items' => $menu_items,
     'title' => 'Дела в порядке',
     'content' => $content,
+    'user' => $USER
 ]);

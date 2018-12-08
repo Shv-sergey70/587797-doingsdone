@@ -1,11 +1,14 @@
 <?php
 require_once('functions.php');
 
+session_start();
+$USER = isset($_SESSION['USER'])?$_SESSION['USER']:null;
+isAuth($USER);
+
 $mysqli = new mysqli("localhost", "root", "root", "DOINGSDONE");
 if ($mysqli->connect_error) {
     die('Ошибка подключения ('.$mysqli->connect_errno.') '.$mysqli->connect_error);
 }
-$USER = true;
 //$city = $mysqli->real_escape_string($city);
 $user_id = intval(1);
 
