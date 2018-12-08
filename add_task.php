@@ -15,7 +15,7 @@ $user_id = intval(1);
 
 
 //Запрашиваем проекты пользователя по его ID
-$menu_items_query = "SELECT id AS ID, name AS NAME FROM projects WHERE author_id = $user_id";
+$menu_items_query = "SELECT id AS ID, name AS NAME FROM projects WHERE author_id = '".$USER['id']."'";
 if (!$result = $mysqli->query($menu_items_query)) {
     die('Ошибка в запросе '.$menu_items_query.' - '.$mysqli->error);
 }
@@ -35,7 +35,7 @@ $tasks_list_query = "SELECT
     JOIN projects
     ON tasks.project_id = projects.id
     WHERE 
-    tasks.author_id = $user_id";
+    tasks.author_id = '".$USER['id']."'";
 if (!$result = $mysqli->query($tasks_list_query)) {
     die('Ошибка в запросе '.$tasks_list_query.' - '.$mysqli->error);
 }
