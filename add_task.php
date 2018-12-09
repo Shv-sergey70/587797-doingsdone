@@ -50,9 +50,6 @@ foreach ($menu_items as $key => $menu_item) {
     $menu_items[$key]['TASKS_COUNT'] = countTasksInProject($tasks_items, $menu_item['NAME'], 'PROJECT_NAME');
 }
 
-//echo "<pre>";
-//var_dump($tasks_items);
-//echo "</pre>";
 
 //Для формы добавления задачи
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

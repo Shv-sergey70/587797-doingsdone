@@ -1,17 +1,22 @@
-<div class="modal" hidden id="project_add">
-    <button class="modal__close" type="button" name="button">Закрыть</button>
+<h2 class="content__main-heading">Добавление проекта</h2>
 
-    <h2 class="modal__heading">Добавление проекта</h2>
+<form class="form"  action="" method="post">
+    <div class="form__row">
+        <label class="form__label" for="project_name">Название <sup>*</sup></label>
 
-    <form class="form"  action="index.html" method="post">
-        <div class="form__row">
-            <label class="form__label" for="project_name">Название <sup>*</sup></label>
+        <input class="form__input <?=!empty($errors['name'])?'form__input--error':''?>" type="text" name="name" id="project_name" value="<?=!empty($_POST['name'])?$_POST['name']:''?>" placeholder="Введите название проекта">
+        <p class="form__message">
+            <span class="form__message error-message"><?=!empty($errors['name'])?$errors['name']:''?></span>
+        </p>
+    </div>
 
-            <input class="form__input" type="text" name="name" id="project_name" value="" placeholder="Введите название проекта">
-        </div>
-
-        <div class="form__row form__row--controls">
-            <input class="button" type="submit" name="" value="Добавить">
-        </div>
-    </form>
-</div>
+    <div class="form__row form__row--controls">
+        <?php if(isset($errors)):?>
+            <p class="error-message">Пожалуйста, исправьте ошибки в форме</p>
+            <?php foreach ($errors as $key => $error):?>
+                <p class="error-message">[<?=$dict[$key]?>] - <?=$error?></p>
+            <?php endforeach;?>
+        <?php endif;?>
+        <input class="button" type="submit" name="" value="Добавить">
+    </div>
+</form>
