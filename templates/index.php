@@ -15,19 +15,18 @@
     </nav>
 
     <label class="checkbox">
-        <!--добавить сюда аттрибут "checked", если переменная $show_complete_tasks равна единице-->
-        <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?=$show_complete_tasks?'checked':''?>>
+        <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?=isset($show_completed_tasks)?'checked':''?>>
         <span class="checkbox__text">Показывать выполненные</span>
     </label>
 </div>
 
 <table class="tasks">
     <?php foreach ($current_tasks_items as $value):?>
-        <?php if (!$value['TASK_STATUS'] || (!!$value['TASK_STATUS'] && $show_complete_tasks)):?>
-            <tr class="tasks__item task <?=(!!$value['TASK_STATUS'] && $show_complete_tasks)?'task--completed':''?> <?=isImportantTask($value['TASK_DEADLINE']??'')?'task--important':''?>">
+        <?php if (!$value['TASK_STATUS'] || (!!$value['TASK_STATUS'] && isset($show_completed_tasks))):?>
+            <tr class="tasks__item task <?=(!!$value['TASK_STATUS'] && isset($show_completed_tasks))?'task--completed':''?> <?=isImportantTask($value['TASK_DEADLINE']??'')?'task--important':''?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
-                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" <?=(!!$value['TASK_STATUS'] && $show_complete_tasks)?'checked':'value="1"'?>>
+                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?=$value['ID']?>" <?=(!!$value['TASK_STATUS'] && isset($show_completed_tasks))?'checked':""?>>
                         <span class="checkbox__text"><?=htmlspecialchars($value['TASK_NAME'], ENT_QUOTES)?></span>
                     </label>
                 </td>
