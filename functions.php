@@ -17,15 +17,6 @@ function include_template($name, $data) {
     return $result;
 }
 
-function countTasksInProject($arTasks, $project_name, $label) {
-    $tasks_num = 0;
-    foreach ($arTasks as $value) {
-        if ($value[$label] === $project_name) {
-            $tasks_num++;
-        }
-    }
-    return $tasks_num;
-}
 function isImportantTask(string $deadline): bool {
     if (DateTime::createFromFormat('d.m.Y', $deadline)) {
         $date_task_timestamp = new DateTime($deadline, new DateTimeZone('Europe/Moscow'));

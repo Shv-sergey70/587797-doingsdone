@@ -10,44 +10,21 @@ if ($mysqli->connect_error) {
     die('Ошибка подключения ('.$mysqli->connect_errno.') '.$mysqli->connect_error);
 }
 
-//$city = $mysqli->real_escape_string($city);
-$user_id = intval(1);
-
-
-//Запрашиваем проекты пользователя по его ID
-$menu_items_query = "SELECT id AS ID, name AS NAME FROM projects WHERE author_id = '".$USER['id']."'";
-if (!$result = $mysqli->query($menu_items_query)) {
-    die('Ошибка в запросе '.$menu_items_query.' - '.$mysqli->error);
+//Запрашиваем проекты и задачи пользователя по его ID
+$all_items_query = "SELECT
+projects.id AS ID,
+projects.name AS NAME,
+COUNT(tasks.id) AS TASKS_COUNT
+FROM projects
+LEFT JOIN tasks
+ON projects.id = tasks.project_id
+WHERE projects.author_id = '".$USER['id']."'
+GROUP BY projects.id";
+if (!$result = $mysqli->query($all_items_query)) {
+    die('Ошибка в запросе '.$all_items_query.' - '.$mysqli->error);
 }
-$menu_items = [];
 while ($res = $result->fetch_assoc()) {
     $menu_items[] = $res;
-}
-
-
-//Запрашиваем задачи пользователя по его ID для меню
-$tasks_list_query = "SELECT 
-    tasks.name AS TASK_NAME,
-    tasks.deadline_datetime AS TASK_DEADLINE,
-    tasks.status AS TASK_STATUS,
-    projects.name AS PROJECT_NAME
-    FROM tasks 
-    JOIN projects
-    ON tasks.project_id = projects.id
-    WHERE 
-    tasks.author_id = '".$USER['id']."'";
-if (!$result = $mysqli->query($tasks_list_query)) {
-    die('Ошибка в запросе '.$tasks_list_query.' - '.$mysqli->error);
-}
-$tasks_items = [];
-while ($res = $result->fetch_assoc()) {
-    $tasks_items[] = $res;
-}
-
-
-//Считаем задачи в проектах
-foreach ($menu_items as $key => $menu_item) {
-    $menu_items[$key]['TASKS_COUNT'] = countTasksInProject($tasks_items, $menu_item['NAME'], 'PROJECT_NAME');
 }
 
 
@@ -77,8 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!DateTime::createFromFormat('Y-m-d H:i', $task['date'])) {
             $errors['date'] = 'Введите дату в формате гггг.мм.дд чч:мм';
         }
-    } else {
-        $task['date'] = 'NULL';
     }
     if (count($errors)) {
         $content = include_template('add_task.php', [
@@ -96,12 +71,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $file_url = 'uploads/' . $new_name;
             move_uploaded_file($tmp_name, $file_url);
         }
-        $insert_task_query = "INSERT INTO tasks SET
-        name = '".$task['name']."', 
-        project_id = '".$task['project']."',
-        file_url = '".$file_url."',
-        author_id = $user_id,
-        deadline_datetime = ".$task['date'];
+        if (empty($task['date'])) {
+            $insert_task_query = "INSERT INTO tasks SET
+            name = '".$task['name']."', 
+            project_id = '".$task['project']."',
+            file_url = '".$file_url."',
+            author_id = '".$USER['id']."'";
+        } else {
+            $insert_task_query = "INSERT INTO tasks SET
+            name = '".$task['name']."', 
+            project_id = '".$task['project']."',
+            file_url = '".$file_url."',
+            author_id = '".$USER['id']."',
+            deadline_datetime = '".$task['date']."'";
+        }
+
         if (!$result = $mysqli->query($insert_task_query)) {
             die('Ошибка в запросе '.$insert_task_query.' - '.$mysqli->error);
         }
