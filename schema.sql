@@ -35,3 +35,5 @@ CREATE INDEX author_id ON tasks(author_id);
 CREATE INDEX project_id ON tasks(project_id);
 
 CREATE INDEX author_id ON projects(author_id);
+
+CREATE FULLTEXT INDEX name ON tasks(name);

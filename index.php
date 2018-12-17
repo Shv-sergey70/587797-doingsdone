@@ -64,6 +64,9 @@ if (!empty($_GET['project_id'])) {
         die();
     }
 }
+if (!empty($_GET['show_all'])) {
+    unset($_SESSION['selected_menu_item_id']);
+}
 if (isset($_SESSION['selected_menu_item_id'])) {
     $tasks_list_query .= ' AND tasks.project_id = '.$_SESSION['selected_menu_item_id'];
 }
@@ -94,16 +97,26 @@ if (isset($_SESSION['task_time_filter'])) {
         unset($_SESSION['task_time_filter']);
     }
 }
+if (isset($_GET['search'])) {
+    $search_error = '';
+    $search = trim($_GET['search']);
+    if (empty($search)) {
+        $search_error = 'Строка поиска не должна быть пустой';
+    } else {
+        $safe_search = $mysqli->real_escape_string($search);
+        $tasks_list_query .= " AND MATCH(tasks.name) AGAINST('*".$safe_search."*' IN BOOLEAN MODE)";
+    }
+}
 $current_tasks_items = [];
 $current_tasks_items = $mysql->getAssocResult($mysql->makeQuery($tasks_list_query));
-
 
 $mysqli->close();
 
 $content = include_template('index.php', [
     'current_tasks_items' => $current_tasks_items,
     'show_completed_tasks' => $_SESSION['SHOW_COMPLETED_TASKS']??NULL,
-    'task_time_filter' => $_SESSION['task_time_filter']??NULL
+    'task_time_filter' => $_SESSION['task_time_filter']??NULL,
+    'search_error' => $search_error??NULL
 ]);
 
 echo include_template('layout.php', [

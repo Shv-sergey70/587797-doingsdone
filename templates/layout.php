@@ -44,7 +44,7 @@
         <div class="content">
             <section class="content__side">
                 <?php if($user):?>
-                    <h2 class="content__side-heading">Проекты</h2>
+                    <h2 class="content__side-heading"><a href="?show_all=y">Проекты</a></h2>
                     <nav class="main-navigation">
                         <ul class="main-navigation__list">
                             <?php foreach($menu_items as $value):?>
