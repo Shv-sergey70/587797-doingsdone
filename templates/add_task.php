@@ -15,7 +15,7 @@
 
         <select class="form__input form__input--select <?=!empty($errors['project'])?'form__input--error':''?>" name="project" id="project">
             <?php foreach ($projects_categories as $project_category):?>
-                <option value="<?=$project_category['ID']?>" <?=isset($_POST['project']) && $_POST['project'] === $project_category['ID']?'selected':''?>><?=$project_category['NAME']?></option>
+                <option value="<?=$project_category['ID']?>" <?=isset($_POST['project']) && $_POST['project'] === $project_category['ID'] || ($selected_menu_id === (int)$project_category['ID'])?'selected':''?>><?=$project_category['NAME']?></option>
             <?php endforeach;?>
         </select>
         <p class="form__message">

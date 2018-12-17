@@ -9,6 +9,8 @@ isAuth($USER);
 $mysql = new MySQL("localhost", "root", "root", "DOINGSDONE");
 $mysqli = $mysql->getConnection();
 $tasks = new Tasks($mysql);
+
+
 //Запрашиваем проекты и задачи пользователя по его ID - меню
 $menu_items = $tasks->getMenu($USER['id']);
 //Для формы добавления задачи
@@ -54,29 +56,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $file_url = 'uploads/' . $new_name;
             move_uploaded_file($tmp_name, $file_url);
         }
-        if (empty($task['date'])) {
-            $insert_task_query = "INSERT INTO tasks SET
+        $insert_task_query = "INSERT INTO tasks SET
             name = '".$task['name']."', 
             project_id = '".$task['project']."',
             file_url = '".$file_url."',
             author_id = '".$USER['id']."'";
-        } else {
-            $insert_task_query = "INSERT INTO tasks SET
-            name = '".$task['name']."', 
-            project_id = '".$task['project']."',
-            file_url = '".$file_url."',
-            author_id = '".$USER['id']."',
-            deadline_datetime = '".$task['date']."'";
+        if (!empty($task['date'])) {
+            $insert_task_query .= " AND deadline_datetime = '".$task['date']."'";
         }
         $mysql->makeQuery($insert_task_query);
         header('Location: /');
         die();
     }
 } else {
-    //Запрашиваем проекты и задачи пользователя по его ID - меню
-    $menu_items = $tasks->getMenu($USER['id']);
     $content = include_template('add_task.php', [
-        'projects_categories' => $menu_items
+        'projects_categories' => $menu_items,
+        'selected_menu_id' => $_SESSION['selected_menu_item_id']??NULL
     ]);
 }
 

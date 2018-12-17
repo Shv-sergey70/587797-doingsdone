@@ -1,7 +1,7 @@
 <?php
 require_once('functions.php');
 spl_autoload_register('classes_autoloader');
-
+date_default_timezone_set('Europe/Moscow');
 session_start();
 $USER = isset($_SESSION['USER'])?$_SESSION['USER']:null;
 isAuth($USER);
@@ -36,61 +36,79 @@ if (isset($_GET['task_id']) && isset($_GET['check'])) {
 //Запрашиваем проекты и задачи пользователя по его ID - меню
 $menu_items = $tasks->getMenu($USER['id']);
 
-//Запрашиваем задачи в выбранном проекте
-$selected_menu_isset = false;
-$current_tasks_items = [];
-if (!empty($_GET['id'])) {
-    $selected_menu_item_id = intval($_GET['id']);
+
+$tasks_list_query = "SELECT
+        tasks.id AS ID,
+        tasks.name AS TASK_NAME,
+        tasks.deadline_datetime AS TASK_DEADLINE,
+        tasks.status AS TASK_STATUS,
+        projects.name AS PROJECT_NAME
+        FROM tasks 
+        JOIN projects
+        ON tasks.project_id = projects.id
+        WHERE
+        tasks.author_id = ".$USER['id'];
+
+
+//Проверяем на существование выбранный проект (пункт меню)
+if (!empty($_GET['project_id'])) {
+    unset($_SESSION['selected_menu_item_id']);
+    $selected_menu_item_id = intval($_GET['project_id']);
     foreach ($menu_items as $menu_item) {
         if ((int)$menu_item['ID'] === $selected_menu_item_id) {
-            $selected_menu_isset = true;
+            $_SESSION['selected_menu_item_id'] = $selected_menu_item_id;
         }
     }
-    if (!$selected_menu_isset) {
+    if (!$_SESSION['selected_menu_item_id']) {
         header("HTTP/1.x 404 Not Found");
         die();
     }
-} else {
-    $current_tasks_list_query = "SELECT
-        tasks.id AS ID,
-        tasks.name AS TASK_NAME,
-        tasks.deadline_datetime AS TASK_DEADLINE,
-        tasks.status AS TASK_STATUS,
-        projects.name AS PROJECT_NAME
-        FROM tasks 
-        JOIN projects
-        ON tasks.project_id = projects.id
-        WHERE
-        tasks.author_id = '".$USER['id']."'";
-    $current_tasks_items = $mysql->getAssocResult($mysql->makeQuery($current_tasks_list_query));
 }
-if ($selected_menu_isset) {
-    //Запрашиваем задачи пользователя по его ID и ID проекта для вывода задач
-    $current_tasks_list_query = "SELECT
-        tasks.id AS ID,
-        tasks.name AS TASK_NAME,
-        tasks.deadline_datetime AS TASK_DEADLINE,
-        tasks.status AS TASK_STATUS,
-        projects.name AS PROJECT_NAME
-        FROM tasks 
-        JOIN projects
-        ON tasks.project_id = projects.id
-        WHERE
-        tasks.project_id = $selected_menu_item_id AND
-        tasks.author_id = '".$USER['id']."'";
-    $current_tasks_items = $mysql->getAssocResult($mysql->makeQuery($current_tasks_list_query));
+if (isset($_SESSION['selected_menu_item_id'])) {
+    $tasks_list_query .= ' AND tasks.project_id = '.$_SESSION['selected_menu_item_id'];
 }
+
+
+//Фильтр задач по срокам
+if (isset($_GET['time'])) {
+    $time_mode = strval($_GET['time']);
+    if ($time_mode === 'all') {
+        unset($_SESSION['task_time_filter']);
+    } else {
+        $_SESSION['task_time_filter'] = $time_mode;
+    }
+}
+if (isset($_SESSION['task_time_filter'])) {
+    $now = date('Y-m-d H:i:s', time());
+    $midnight = date('Y-m-d H:i:s', strtotime('+1 day 00:00:00'));
+    $tomorrow_midnight = date('Y-m-d H:i:s', strtotime('+2 day 00:00:00'));
+    if ($_SESSION['task_time_filter'] === 'today') {
+        $tasks_list_query .= " AND tasks.deadline_datetime >= '$now' 
+        AND tasks.deadline_datetime <= '$midnight'";
+    } elseif ($_SESSION['task_time_filter'] === 'tomorrow') {
+        $tasks_list_query .= " AND tasks.deadline_datetime >= '$midnight' 
+        AND tasks.deadline_datetime <= '$tomorrow_midnight'";
+    } elseif ($_SESSION['task_time_filter'] === 'expired') {
+        $tasks_list_query .= " AND tasks.deadline_datetime < '$now'";
+    } else {
+        unset($_SESSION['task_time_filter']);
+    }
+}
+$current_tasks_items = [];
+$current_tasks_items = $mysql->getAssocResult($mysql->makeQuery($tasks_list_query));
 
 
 $mysqli->close();
 
 $content = include_template('index.php', [
     'current_tasks_items' => $current_tasks_items,
-    'show_completed_tasks' => $_SESSION['SHOW_COMPLETED_TASKS']??NULL
+    'show_completed_tasks' => $_SESSION['SHOW_COMPLETED_TASKS']??NULL,
+    'task_time_filter' => $_SESSION['task_time_filter']??NULL
 ]);
 
 echo include_template('layout.php', [
     'menu_items' => $menu_items,
+    'selected_menu_id' => $_SESSION['selected_menu_item_id']??NULL,
     'title' => 'Дела в порядке',
     'content' => $content,
     'user' => $USER

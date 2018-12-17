@@ -48,8 +48,8 @@
                     <nav class="main-navigation">
                         <ul class="main-navigation__list">
                             <?php foreach($menu_items as $value):?>
-                                <li class="main-navigation__list-item">
-                                    <a class="main-navigation__list-item-link" href="/index.php?id=<?=$value['ID']?>"><?=$value['NAME']?></a>
+                                <li class="main-navigation__list-item <?=($selected_menu_id === (int)$value['ID'])?'main-navigation__list-item--active':''?>">
+                                    <a class="main-navigation__list-item-link" href="/index.php?project_id=<?=$value['ID']?>"><?=$value['NAME']?></a>
                                     <span class="main-navigation__list-item-count"><?=$value['TASKS_COUNT']?></span>
                                 </li>
                             <?php endforeach;?>

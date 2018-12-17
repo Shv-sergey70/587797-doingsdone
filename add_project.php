@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     if (!empty($project['name'])) {
-        $project_query = "SELECT name AS NAME FROM projects WHERE author_id = '".$USER['id']."'";
+        $project_query = "SELECT name AS NAME FROM projects WHERE author_id = ".$USER['id'];
         $result = $mysql->makeQuery($project_query);
         while ($res = $result->fetch_assoc()) {
             if (mb_strtolower($res['NAME']) === mb_strtolower($project['name'])) {
