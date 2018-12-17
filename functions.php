@@ -35,3 +35,6 @@ function isAuth(?array $user) {
         die();
     }
 }
+function classes_autoloader($class) {
+    require_once $_SERVER['DOCUMENT_ROOT'].'/classes/'.$class.'.php';
+}

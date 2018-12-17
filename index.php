@@ -1,14 +1,14 @@
 <?php
 require_once('functions.php');
+spl_autoload_register('classes_autoloader');
 
 session_start();
 $USER = isset($_SESSION['USER'])?$_SESSION['USER']:null;
 isAuth($USER);
 
-$mysqli = new mysqli("localhost", "root", "root", "DOINGSDONE");
-if ($mysqli->connect_error) {
-    die('Ошибка подключения ('.$mysqli->connect_errno.') '.$mysqli->connect_error);
-}
+$mysql = new MySQL("localhost", "root", "root", "DOINGSDONE");
+$mysqli = $mysql->getConnection();
+$tasks = new Tasks($mysql);
 
 
 //Показывать выполненные задачи
@@ -29,32 +29,12 @@ if (isset($_GET['task_id']) && isset($_GET['check'])) {
         WHERE 
         tasks.id = $task_id AND
         tasks.author_id = '".$USER['id']."'";
-        if (!$result = $mysqli->query($check_task_query)) {
-            die('Ошибка в запросе '.$check_task_query.' - '.$mysqli->error);
-        }
+        $mysql->makeQuery($check_task_query);
     }
 
 }
-
-
-//Запрашиваем проекты и задачи пользователя по его ID
-$all_items_query = "SELECT
-projects.id AS ID,
-projects.name AS NAME,
-COUNT(tasks.id) AS TASKS_COUNT
-FROM projects
-LEFT JOIN tasks
-ON projects.id = tasks.project_id
-WHERE projects.author_id = '".$USER['id']."'
-GROUP BY projects.id";
-if (!$result = $mysqli->query($all_items_query)) {
-    die('Ошибка в запросе '.$all_items_query.' - '.$mysqli->error);
-}
-$menu_items = [];
-while ($res = $result->fetch_assoc()) {
-    $menu_items[] = $res;
-}
-
+//Запрашиваем проекты и задачи пользователя по его ID - меню
+$menu_items = $tasks->getMenu($USER['id']);
 
 //Запрашиваем задачи в выбранном проекте
 $selected_menu_isset = false;
@@ -82,12 +62,7 @@ if (!empty($_GET['id'])) {
         ON tasks.project_id = projects.id
         WHERE
         tasks.author_id = '".$USER['id']."'";
-    if (!$result = $mysqli->query($current_tasks_list_query)) {
-        die('Ошибка в запросе '.$current_tasks_list_query.' - '.$mysqli->error);
-    }
-    while ($res = $result->fetch_assoc()) {
-        $current_tasks_items[] = $res;
-    }
+    $current_tasks_items = $mysql->getAssocResult($mysql->makeQuery($current_tasks_list_query));
 }
 if ($selected_menu_isset) {
     //Запрашиваем задачи пользователя по его ID и ID проекта для вывода задач
@@ -103,21 +78,11 @@ if ($selected_menu_isset) {
         WHERE
         tasks.project_id = $selected_menu_item_id AND
         tasks.author_id = '".$USER['id']."'";
-    if (!$result = $mysqli->query($current_tasks_list_query)) {
-        die('Ошибка в запросе '.$current_tasks_list_query.' - '.$mysqli->error);
-    }
-    while ($res = $result->fetch_assoc()) {
-        $current_tasks_items[] = $res;
-    }
+    $current_tasks_items = $mysql->getAssocResult($mysql->makeQuery($current_tasks_list_query));
 }
 
 
 $mysqli->close();
-
-
-// показывать или нет выполненные задачи
-$show_complete_tasks = rand(0, 1);
-
 
 $content = include_template('index.php', [
     'current_tasks_items' => $current_tasks_items,

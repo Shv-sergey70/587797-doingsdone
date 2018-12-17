@@ -1,32 +1,14 @@
 <?php
 require_once('functions.php');
+spl_autoload_register('classes_autoloader');
 
 session_start();
 $USER = isset($_SESSION['USER'])?$_SESSION['USER']:null;
 isAuth($USER);
 
-$mysqli = new mysqli("localhost", "root", "root", "DOINGSDONE");
-if ($mysqli->connect_error) {
-    die('Ошибка подключения ('.$mysqli->connect_errno.') '.$mysqli->connect_error);
-}
-
-
-//Запрашиваем проекты и задачи пользователя по его ID
-$all_items_query = "SELECT
-projects.id AS ID,
-projects.name AS NAME,
-COUNT(tasks.id) AS TASKS_COUNT
-FROM projects
-LEFT JOIN tasks
-ON projects.id = tasks.project_id
-WHERE projects.author_id = '".$USER['id']."'
-GROUP BY projects.id";
-if (!$result = $mysqli->query($all_items_query)) {
-    die('Ошибка в запросе '.$all_items_query.' - '.$mysqli->error);
-}
-while ($res = $result->fetch_assoc()) {
-    $menu_items[] = $res;
-}
+$mysql = new MySQL("localhost", "root", "root", "DOINGSDONE");
+$mysqli = $mysql->getConnection();
+$tasks = new Tasks($mysql);
 
 //Для формы добавления задачи
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -41,9 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (!empty($project['name'])) {
         $project_query = "SELECT name AS NAME FROM projects WHERE author_id = '".$USER['id']."'";
-        if (!$result = $mysqli->query($project_query)) {
-            die('Ошибка в запросе '.$project_query.' - '.$mysqli->error);
-        }
+        $result = $mysql->makeQuery($project_query);
         while ($res = $result->fetch_assoc()) {
             if (mb_strtolower($res['NAME']) === mb_strtolower($project['name'])) {
                 $errors['name'] = 'Проект с таким именем уже существует';
@@ -60,9 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $insert_project_query = "INSERT INTO projects SET
         name = '$safe_project_name',
         author_id = '".$USER['id']."'";
-        if (!$result = $mysqli->query($insert_project_query)) {
-            die('Ошибка в запросе '.$insert_project_query.' - '.$mysqli->error);
-        }
+        $result = $mysql->makeQuery($insert_project_query);
         $content = include_template('add_project.php', [
         ]);
     }
@@ -72,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 
+//Запрашиваем проекты и задачи пользователя по его ID - меню
+$menu_items = $tasks->getMenu($USER['id']);
 
 $mysqli->close();
 echo include_template('layout.php', [

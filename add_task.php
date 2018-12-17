@@ -1,32 +1,14 @@
 <?php
 require_once('functions.php');
+spl_autoload_register('classes_autoloader');
 
 session_start();
 $USER = isset($_SESSION['USER'])?$_SESSION['USER']:null;
 isAuth($USER);
 
-$mysqli = new mysqli("localhost", "root", "root", "DOINGSDONE");
-if ($mysqli->connect_error) {
-    die('Ошибка подключения ('.$mysqli->connect_errno.') '.$mysqli->connect_error);
-}
-
-//Запрашиваем проекты и задачи пользователя по его ID
-$all_items_query = "SELECT
-projects.id AS ID,
-projects.name AS NAME,
-COUNT(tasks.id) AS TASKS_COUNT
-FROM projects
-LEFT JOIN tasks
-ON projects.id = tasks.project_id
-WHERE projects.author_id = '".$USER['id']."'
-GROUP BY projects.id";
-if (!$result = $mysqli->query($all_items_query)) {
-    die('Ошибка в запросе '.$all_items_query.' - '.$mysqli->error);
-}
-while ($res = $result->fetch_assoc()) {
-    $menu_items[] = $res;
-}
-
+$mysql = new MySQL("localhost", "root", "root", "DOINGSDONE");
+$mysqli = $mysql->getConnection();
+$tasks = new Tasks($mysql);
 
 //Для формы добавления задачи
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -85,20 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             author_id = '".$USER['id']."',
             deadline_datetime = '".$task['date']."'";
         }
-
-        if (!$result = $mysqli->query($insert_task_query)) {
-            die('Ошибка в запросе '.$insert_task_query.' - '.$mysqli->error);
-        }
+        $mysql->makeQuery($insert_task_query);
         header('Location: /');
         die();
     }
 } else {
+    //Запрашиваем проекты и задачи пользователя по его ID - меню
+    $menu_items = $tasks->getMenu($USER['id']);
     $content = include_template('add_task.php', [
         'projects_categories' => $menu_items
     ]);
 }
-
-
 
 $mysqli->close();
 echo include_template('layout.php', [
