@@ -1,13 +1,17 @@
 <?php
+use Doingsdone\MySQL as MySQL;
+
 require_once('functions.php');
-
-$USER = null;
-
-$mysqli = new mysqli("localhost", "root", "root", "DOINGSDONE");
-if ($mysqli->connect_error) {
-    die('Ошибка подключения ('.$mysqli->connect_errno.') '.$mysqli->connect_error);
+require_once('vendor/autoload.php');
+session_start();
+$USER = isset($_SESSION['USER'])?$_SESSION['USER']:null;
+if ($USER) {
+    header('Location: /');
+    die();
 }
 
+$mysql = new MySQL("localhost", "root", "root", "DOINGSDONE");
+$mysqli = $mysql->getConnection();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_user = $_POST;
@@ -29,12 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             //Проверка email на занятость
             $email_query = "SELECT 
-email AS EMAIL 
-FROM users 
-WHERE email = '$safe_user_email'";
-            if (!$result = $mysqli->query($email_query)) {
-                die('Ошибка в запросе '.$email_query.' - '.$mysqli->error);
-            }
+            email AS EMAIL 
+            FROM users 
+            WHERE email = '$safe_user_email'";
+            $result = $mysql->makeQuery($email_query);
             if ($result->num_rows) {
                 $errors['email'] = 'Такой email уже зарегистрирован';
             }
@@ -54,9 +56,7 @@ WHERE email = '$safe_user_email'";
 SET email = '$safe_user_email',
 name = '".$new_user['name']."',
 password = '$safe_user_password_hash'";
-        if (!$result = $mysqli->query($register_query)) {
-            die('Ошибка в запросе '.$register_query.' - '.$mysqli->error);
-        }
+        $result = $mysql->makeQuery($register_query);
         header('Location: /');
         die();
     }

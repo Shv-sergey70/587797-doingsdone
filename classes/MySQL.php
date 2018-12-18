@@ -1,4 +1,6 @@
 <?php
+namespace Doingsdone;
+
 class MySQL {
     protected $host;
     protected $username;
@@ -16,7 +18,7 @@ class MySQL {
         if (!empty($this->connection)) {
             return $this->connection;
         } else {
-            $mysqli = new mysqli($this->host, $this->username, $this->password, $this->dbname);
+            $mysqli = new \mysqli($this->host, $this->username, $this->password, $this->dbname);
             if ($mysqli->connect_error) {
                 die('Ошибка подключения (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error);
             }

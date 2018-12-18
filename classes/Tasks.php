@@ -1,4 +1,6 @@
 <?php
+namespace Doingsdone;
+
 /**
  * Created by PhpStorm.
  * User: shv.sergey

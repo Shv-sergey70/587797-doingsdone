@@ -1,7 +1,10 @@
 <?php
-require_once('functions.php');
-spl_autoload_register('classes_autoloader');
+use Doingsdone\MySQL as MySQL;
+use Doingsdone\Tasks as Tasks;
 
+
+require_once('functions.php');
+require_once('vendor/autoload.php');
 session_start();
 $USER = isset($_SESSION['USER'])?$_SESSION['USER']:null;
 isAuth($USER);

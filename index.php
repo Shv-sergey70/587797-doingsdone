@@ -1,6 +1,9 @@
 <?php
+use Doingsdone\MySQL as MySQL;
+use Doingsdone\Tasks as Tasks;
+
+require_once('vendor/autoload.php');
 require_once('functions.php');
-spl_autoload_register('classes_autoloader');
 date_default_timezone_set('Europe/Moscow');
 session_start();
 $USER = isset($_SESSION['USER'])?$_SESSION['USER']:null;

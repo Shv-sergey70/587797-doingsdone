@@ -1,11 +1,17 @@
 <?php
-require_once('functions.php');
-$USER = null;
+use Doingsdone\MySQL as MySQL;
 
-$mysqli = new mysqli("localhost", "root", "root", "DOINGSDONE");
-if ($mysqli->connect_error) {
-    die('Ошибка подключения ('.$mysqli->connect_errno.') '.$mysqli->connect_error);
+require_once('functions.php');
+require_once('vendor/autoload.php');
+session_start();
+$USER = isset($_SESSION['USER'])?$_SESSION['USER']:null;
+if ($USER) {
+    header('Location: /');
+    die();
 }
+
+$mysql = new MySQL("localhost", "root", "root", "DOINGSDONE");
+$mysqli = $mysql->getConnection();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $auth = $_POST;
@@ -30,9 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         FROM users
         WHERE
         email = '$safe_email'";
-        if (!$result = $mysqli->query($auth_query)) {
-            die('Ошибка в запросе '.$auth_query.' - '.$mysqli->error);
-        }
+        $result = $mysql->makeQuery($auth_query);
         if (!$result->num_rows) {
             $errors['access'] = 'Вы ввели неверный email/пароль';
         } else {
@@ -40,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!password_verify($auth['password'], $DB_result['password'])) {
                 $errors['access'] = 'Вы ввели неверный email/пароль';
             } else {
-                session_start();
                 $_SESSION['USER'] = $DB_result;
                 header('Location: /');
                 die();
