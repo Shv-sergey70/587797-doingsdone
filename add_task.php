@@ -1,6 +1,7 @@
 <?php
 use Doingsdone\MySQL as MySQL;
 use Doingsdone\Tasks as Tasks;
+use Respect\Validation\Validator as V;
 
 require_once('vendor/autoload.php');
 require_once('functions.php');
@@ -19,11 +20,12 @@ $menu_items = $tasks->getMenu($USER['id']);
 //Для формы добавления задачи
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $task = $_POST;
+    $requiredValidator = V::notEmpty();
     $required = ['name', 'project'];
     $dict = ['name' => 'Название', 'project' => 'Проект'];
     $errors = [];
     foreach ($required as $item) {
-        if (empty($task[$item])) {
+        if (!$requiredValidator->validate($task[$item])) {
             $errors[$item] = 'Это поле нужно заполнить';
         }
     }
@@ -38,10 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors['project'] = 'Выберите проект из списка';
         }
     }
-    if (!empty($task['date'])) {
-        if (!DateTime::createFromFormat('Y-m-d H:i', $task['date'])) {
-            $errors['date'] = 'Введите дату в формате гггг.мм.дд чч:мм';
-        }
+    if (!V::optional(V::date( 'Y-m-d H:i'))->validate($task['date'])) {
+        $errors['date'] = 'Введите дату в формате гггг.мм.дд чч:мм';
     }
     if (count($errors)) {
         $content = include_template('add_task.php', [

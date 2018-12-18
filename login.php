@@ -1,5 +1,7 @@
 <?php
 use Doingsdone\MySQL as MySQL;
+use Respect\Validation\Validator as V;
+
 
 require_once('functions.php');
 require_once('vendor/autoload.php');
@@ -15,18 +17,18 @@ $mysqli = $mysql->getConnection();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $auth = $_POST;
+    $requiredValidator = V::notEmpty();
+    $emailValidator = V::email();
     $required_fields = ['email', 'password'];
     $dict = ['email' => 'E-mail', 'password' => 'Пароль', 'access' => 'Доступ'];
     $errors = [];
-    foreach ($required_fields as $required_field) {
-        if (empty($auth[$required_field])) {
-            $errors[$required_field] = 'Это поле нужно заполнить';
-        }
-    }
     //Проверка email на валидность
-    if (!empty($auth['email'])) {
-        if (!filter_var($auth['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Введите валидный email';
+    if (!$emailValidator->validate($auth['email'])) {
+        $errors['email'] = 'Введите валидный email';
+    }
+    foreach ($required_fields as $required_field) {
+        if (!$requiredValidator->validate($auth[$required_field])) {
+            $errors[$required_field] = 'Это поле нужно заполнить';
         }
     }
     //Запрашиваем email в бд если ошибок нет

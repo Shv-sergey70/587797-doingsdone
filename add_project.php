@@ -1,6 +1,7 @@
 <?php
 use Doingsdone\MySQL as MySQL;
 use Doingsdone\Tasks as Tasks;
+use Respect\Validation\Validator as V;
 
 
 require_once('functions.php');
@@ -16,19 +17,21 @@ $tasks = new Tasks($mysql);
 //Для формы добавления задачи
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $project = $_POST;
+    $requiredValidator = V::notEmpty();
     $required_items = ['name'];
     $dict = ['name' => 'Название'];
     $errors = [];
     foreach ($required_items as $required_item) {
-        if (empty($project[$required_item])) {
+        if (!$requiredValidator->validate($project[$required_item])) {
             $errors[$required_item] = 'Это поле нужно заполнить';
         }
     }
     if (!empty($project['name'])) {
         $project_query = "SELECT name AS NAME FROM projects WHERE author_id = ".$USER['id'];
         $result = $mysql->makeQuery($project_query);
+        $project_name_lowercase = mb_strtolower($project['name']);
         while ($res = $result->fetch_assoc()) {
-            if (mb_strtolower($res['NAME']) === mb_strtolower($project['name'])) {
+            if (V::equals(mb_strtolower($res['NAME']))->validate($project_name_lowercase)) {
                 $errors['name'] = 'Проект с таким именем уже существует';
             }
         }

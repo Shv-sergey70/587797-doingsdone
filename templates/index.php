@@ -7,7 +7,7 @@
 </form>
 <div class="tasks-controls">
     <nav class="tasks-switch">
-        <a href="?time=all" class="tasks-switch__item <?=(!isset($task_time_filter))?'tasks-switch__item--active':''?>">Все задачи</a>
+        <a href="?time=all" class="tasks-switch__item composer require respect/validation<?=(!isset($task_time_filter))?'tasks-switch__item--active':''?>">Все задачи</a>
         <a href="?time=today" class="tasks-switch__item <?=($task_time_filter === 'today')?'tasks-switch__item--active':''?>">Повестка дня</a>
         <a href="?time=tomorrow" class="tasks-switch__item <?=($task_time_filter === 'tomorrow')?'tasks-switch__item--active':''?>">Завтра</a>
         <a href="?time=expired" class="tasks-switch__item <?=($task_time_filter === 'expired')?'tasks-switch__item--active':''?>">Просроченные</a>

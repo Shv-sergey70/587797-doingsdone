@@ -11,7 +11,8 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "swiftmailer/swiftmailer": "^6.1"
+        "swiftmailer/swiftmailer": "^6.1",
+        "respect/validation": "^1.1"
     },
     "autoload": {
       "psr-4": {
