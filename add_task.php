@@ -63,9 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             name = '".$task['name']."', 
             project_id = '".$task['project']."',
             file_url = '".$file_url."',
-            author_id = '".$USER['id']."'";
+            author_id = ".$USER['id'];
         if (!empty($task['date'])) {
-            $insert_task_query .= " AND deadline_datetime = '".$task['date']."'";
+            $insert_task_query .= ", deadline_datetime = '".$task['date']."'";
         }
         $mysql->makeQuery($insert_task_query);
         header('Location: /');

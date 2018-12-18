@@ -112,7 +112,6 @@ if (isset($_GET['search'])) {
 }
 $current_tasks_items = [];
 $current_tasks_items = $mysql->getAssocResult($mysql->makeQuery($tasks_list_query));
-
 $mysqli->close();
 
 $content = include_template('index.php', [
