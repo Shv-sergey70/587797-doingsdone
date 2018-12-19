@@ -36,31 +36,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    if (count($errors)) {
-        $content = include_template('add_project.php', [
-            'errors' => $errors,
-            'dict' => $dict
-        ]);
-    } else {
+    if (!count($errors)) {
         $safe_project_name = $mysqli->real_escape_string($project['name']);
         $insert_project_query = "INSERT INTO projects SET
         name = '$safe_project_name',
         author_id = '".$USER['id']."'";
         $result = $mysql->makeQuery($insert_project_query);
-        $content = include_template('add_project.php', [
-        ]);
     }
-} else {
-    $content = include_template('add_project.php', [
-    ]);
 }
-
-
 //Запрашиваем проекты и задачи пользователя по его ID - меню
 $menu_items = $tasks->getMenu($USER['id']);
-
 $mysqli->close();
+
+$content = include_template('add_project.php', [
+    'errors' => $errors??NULL,
+    'dict' => $dict??NULL
+]);
+
 echo include_template('layout.php', [
+    'all_tasks_count' => $tasks->countAllTasks($USER['id']),
     'menu_items' => $menu_items,
     'title' => 'Дела в порядке',
     'content' => $content,

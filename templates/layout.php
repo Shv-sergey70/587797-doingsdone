@@ -44,9 +44,13 @@
         <div class="content">
             <section class="content__side">
                 <?php if($user):?>
-                    <h2 class="content__side-heading"><a href="?show_all=y">Проекты</a></h2>
+                    <h2 class="content__side-heading">Проекты</h2>
                     <nav class="main-navigation">
                         <ul class="main-navigation__list">
+                            <li class="main-navigation__list-item <?=!isset($selected_menu_id)?'main-navigation__list-item--active':''?>">
+                                <a class="main-navigation__list-item-link" href="?show_all=y">Все задачи</a>
+                                <span class="main-navigation__list-item-count"><?=$all_tasks_count?></span>
+                            </li>
                             <?php foreach($menu_items as $value):?>
                                 <li class="main-navigation__list-item <?=($selected_menu_id === (int)$value['ID'])?'main-navigation__list-item--active':''?>">
                                     <a class="main-navigation__list-item-link" href="/index.php?project_id=<?=$value['ID']?>"><?=$value['NAME']?></a>

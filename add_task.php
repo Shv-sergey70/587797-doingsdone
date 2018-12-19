@@ -43,12 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!V::optional(V::date( 'Y-m-d H:i'))->validate($task['date'])) {
         $errors['date'] = 'Введите дату в формате гггг.мм.дд чч:мм';
     }
-    if (count($errors)) {
-        $content = include_template('add_task.php', [
-            'projects_categories' => $menu_items,
-            'errors' => $errors
-        ]);
-    } else {
+    if (!count($errors)) {
         $file_url = null;
         if (!empty($_FILES['preview']['name'])) {
             $tmp_name = $_FILES['preview']['tmp_name'];
@@ -71,15 +66,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: /');
         die();
     }
-} else {
-    $content = include_template('add_task.php', [
-        'projects_categories' => $menu_items,
-        'selected_menu_id' => $_SESSION['selected_menu_item_id']??NULL
-    ]);
 }
+
+$content = include_template('add_task.php', [
+    'projects_categories' => $menu_items,
+    'selected_menu_id' => $_SESSION['selected_menu_item_id']??NULL,
+    'errors' => $errors??NULL
+]);
 
 $mysqli->close();
 echo include_template('layout.php', [
+    'all_tasks_count' => $tasks->countAllTasks($USER['id']),
     'menu_items' => $menu_items,
     'title' => 'Дела в порядке',
     'content' => $content,

@@ -31,10 +31,11 @@
                             <span class="checkbox__text"><?=htmlspecialchars($value['TASK_NAME'], ENT_QUOTES)?></span>
                         </label>
                     </td>
-
+                    <?php if(!empty($value['FILE_SRC'])):?>
                     <td class="task__file">
-                        <a class="download-link" href="#">Home.psd</a>
+                        <a class="download-link" href="<?=$value['FILE_SRC']?>">Прикрепленный файл</a>
                     </td>
+                    <?php endif;?>
 
                     <td class="task__date"><?=htmlspecialchars($value['TASK_DEADLINE']??'', ENT_QUOTES)?></td>
                 </tr>

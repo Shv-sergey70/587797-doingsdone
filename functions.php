@@ -1,6 +1,12 @@
 <?php
 declare(strict_types=1);
-function include_template($name, $data) {
+/**
+ * Функци-шаблонизатор
+ * @param string $name
+ * @param array $data
+ * @return false|string
+ */
+function include_template(string $name, array $data) {
     $name = 'templates/' . $name;
     $result = '';
 
@@ -17,6 +23,11 @@ function include_template($name, $data) {
     return $result;
 }
 
+/**
+ * Определяем, осталось ли до конца задачи менее 24 часов
+ * @param string $deadline
+ * @return bool
+ */
 function isImportantTask(string $deadline): bool {
     if (DateTime::createFromFormat('d.m.Y', $deadline)) {
         $date_task_timestamp = new DateTime($deadline, new DateTimeZone('Europe/Moscow'));
@@ -29,12 +40,13 @@ function isImportantTask(string $deadline): bool {
     }
 }
 
-function isAuth(?array $user) {
+/**
+ * Определяет, аутентифицирован ли пользователь
+ * @param array|null $user
+ */
+function isAuth(?array $user): void {
     if (!$user) {
         header('Location: /guest.php');
         die();
     }
-}
-function classes_autoloader($class) {
-    require_once $_SERVER['DOCUMENT_ROOT'].'/classes/'.$class.'.php';
 }

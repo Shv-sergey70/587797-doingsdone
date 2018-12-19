@@ -18,12 +18,12 @@ $tasks = new Tasks($mysql);
 if (isset($_GET['show_completed'])) {
     if ($_GET['show_completed'] === '1') {
         $_SESSION['SHOW_COMPLETED_TASKS'] = true;
-    } elseif ($_GET['show_completed'] === '0') {
+    } else {
         unset($_SESSION['SHOW_COMPLETED_TASKS']);
     }
 }
 //Отметить задачу выполненной/невыполненной
-if (isset($_GET['task_id']) && isset($_GET['check'])) {
+if (isset($_GET['task_id'], $_GET['check'])) {
     $task_id = intval($_GET['task_id']);
     $check = intval($_GET['check']);
     if ($check === 1 || $check === 0) {
@@ -31,7 +31,7 @@ if (isset($_GET['task_id']) && isset($_GET['check'])) {
         SET tasks.status = $check
         WHERE 
         tasks.id = $task_id AND
-        tasks.author_id = '".$USER['id']."'";
+        tasks.author_id = ".$USER['id'];
         $mysql->makeQuery($check_task_query);
     }
 
@@ -45,6 +45,7 @@ $tasks_list_query = "SELECT
         tasks.name AS TASK_NAME,
         tasks.deadline_datetime AS TASK_DEADLINE,
         tasks.status AS TASK_STATUS,
+        tasks.file_url AS FILE_SRC,
         projects.name AS PROJECT_NAME
         FROM tasks 
         JOIN projects
@@ -122,6 +123,7 @@ $content = include_template('index.php', [
 ]);
 
 echo include_template('layout.php', [
+    'all_tasks_count' => $tasks->countAllTasks($USER['id']),
     'menu_items' => $menu_items,
     'selected_menu_id' => $_SESSION['selected_menu_item_id']??NULL,
     'title' => 'Дела в порядке',
