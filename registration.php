@@ -3,6 +3,7 @@ use Doingsdone\MySQL as MySQL;
 use Respect\Validation\Validator as V;
 
 
+require_once('dbconn.php');
 require_once('functions.php');
 require_once('vendor/autoload.php');
 session_start();
@@ -11,8 +12,7 @@ if ($USER) {
     header('Location: /');
     die();
 }
-
-$mysql = new MySQL("localhost", "root", "root", "DOINGSDONE");
+$mysql = new MySQL($DB['host'], $DB['username'], $DB['password'], $DB['dbname']);
 $mysqli = $mysql->getConnection();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

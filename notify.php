@@ -1,10 +1,12 @@
 <?php
 use Doingsdone\MySQL as MySQL;
 
+
+require_once('dbconn.php');
 require_once('functions.php');
 require_once('vendor/autoload.php');
 
-$mysql = new MySQL("localhost", "root", "root", "DOINGSDONE");
+$mysql = new MySQL($DB['host'], $DB['username'], $DB['password'], $DB['dbname']);
 $mysqli = $mysql->getConnection();
 
 $expiring_tasks_query = "SELECT

@@ -15,9 +15,9 @@ INSERT INTO tasks(id, name, status, finish_datetime, deadline_datetime, file_url
 (6, 'Заказать пиццу', 0, NULL, '2018-12-06 00:00:00', NULL, 1, 4);
 
 INSERT INTO users(id, email, name, password, contacts) VALUES
-(1, 'shv.sergey70@gmail.com', 'Сергей', '125125', 'Грибоедова 89'),
-(2, 'gavgav@mail.ru', 'Николай', '12345', 'Невский проспект 120'),
-(3, 'myamya@mail.ru', 'Анастасия', '1234567', 'Гороховая 24');
+(1, 'shv.sergey70@gmail.com', 'Сергей', '$2y$10$OqvsKHQwr0Wk6FMZDoHo1uHoXd4UdxJG/5UDtUiie00XaxMHrW8ka', 'Грибоедова 89'),
+(2, 'gavgav@mail.ru', 'Николай', '$2y$10$bWtSjUhwgggtxrnJ7rxmIe63ABubHQs0AS0hgnOo41IEdMHkYoSVa', 'Невский проспект 120'),
+(3, 'myamya@mail.ru', 'Анастасия', '$2y$10$2OxpEH7narYpkOT1H5cApezuzh10tZEEQ2axgFOaKW.55LxIJBgWW', 'Гороховая 24');
 
 -- Получить список из всех проектов для одного пользователя;
 -- SELECT * FROM projects WHERE author_id = 1;

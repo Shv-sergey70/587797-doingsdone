@@ -2,14 +2,16 @@
 use Doingsdone\MySQL as MySQL;
 use Doingsdone\Tasks as Tasks;
 
-require_once('vendor/autoload.php');
+
+require_once('dbconn.php');
 require_once('functions.php');
+require_once('vendor/autoload.php');
 date_default_timezone_set('Europe/Moscow');
 session_start();
 $USER = isset($_SESSION['USER'])?$_SESSION['USER']:null;
 isAuth($USER);
 
-$mysql = new MySQL("localhost", "root", "root", "DOINGSDONE");
+$mysql = new MySQL($DB['host'], $DB['username'], $DB['password'], $DB['dbname']);
 $mysqli = $mysql->getConnection();
 $tasks = new Tasks($mysql);
 
@@ -62,7 +64,7 @@ if (!empty($_GET['project_id'])) {
             $_SESSION['selected_menu_item_id'] = $selected_menu_item_id;
         }
     }
-    if (!$_SESSION['selected_menu_item_id']) {
+    if (!isset($_SESSION['selected_menu_item_id'])) {
         header("HTTP/1.x 404 Not Found");
         die();
     }

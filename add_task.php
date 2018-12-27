@@ -3,14 +3,15 @@ use Doingsdone\MySQL as MySQL;
 use Doingsdone\Tasks as Tasks;
 use Respect\Validation\Validator as V;
 
-require_once('vendor/autoload.php');
+require_once('dbconn.php');
 require_once('functions.php');
+require_once('vendor/autoload.php');
 
 session_start();
 $USER = isset($_SESSION['USER'])?$_SESSION['USER']:null;
 isAuth($USER);
 
-$mysql = new MySQL("localhost", "root", "root", "DOINGSDONE");
+$mysql = new MySQL($DB['host'], $DB['username'], $DB['password'], $DB['dbname']);
 $mysqli = $mysql->getConnection();
 $tasks = new Tasks($mysql);
 
