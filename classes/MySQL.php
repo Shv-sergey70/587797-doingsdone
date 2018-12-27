@@ -80,7 +80,7 @@ class MySQL {
      * @param $query
      * @return bool|\mysqli_result
      */
-    public function makeQuery($query)
+    public function makeQuery(string $query)
     {
         if (!$result = $this->getConnection()->query($query)) {
             die('Ошибка в запросе '.$query.' - '.$this->getConnection()->error);

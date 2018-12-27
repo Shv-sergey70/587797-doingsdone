@@ -39,29 +39,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE
         email = '$safe_email'";
         $result = $mysql->makeQuery($auth_query);
-        if (!$result->num_rows) {
+        $DB_result = $result->fetch_assoc();
+        if (empty($DB_result) || (!password_verify($auth['password'], $DB_result['password']))) {
             $errors['access'] = 'Вы ввели неверный email/пароль';
         } else {
-            $DB_result = $result->fetch_assoc();
-            if (!password_verify($auth['password'], $DB_result['password'])) {
-                $errors['access'] = 'Вы ввели неверный email/пароль';
-            } else {
-                $_SESSION['USER'] = $DB_result;
-                header('Location: /');
-                die();
-            }
+            $_SESSION['USER'] = $DB_result;
+            header('Location: /');
+            die();
         }
     }
-    if (count($errors)) {
-        $content = include_template('login.php', [
-            'errors' => $errors,
-            'dict' => $dict
-        ]);
-    }
-} else {
-    $content = include_template('login.php', [
-    ]);
 }
+
+
+$content = include_template('login.php', [
+    'errors' => $errors??NULL,
+    'dict' => $dict??NULL
+]);
 
 
 echo include_template('layout.php', [

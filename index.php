@@ -13,7 +13,6 @@ $mysql = new MySQL("localhost", "root", "root", "DOINGSDONE");
 $mysqli = $mysql->getConnection();
 $tasks = new Tasks($mysql);
 
-
 //Показывать выполненные задачи
 if (isset($_GET['show_completed'])) {
     if ($_GET['show_completed'] === '1') {

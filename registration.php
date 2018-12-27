@@ -58,7 +58,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         SET email = '$safe_user_email',
         name = '".$new_user['name']."',
         password = '$safe_user_password_hash'";
-        $result = $mysql->makeQuery($register_query);
+        if ($mysql->makeQuery($register_query)) {
+            $auth_query = "SELECT *
+            FROM users
+            WHERE
+            id = ".$mysqli->insert_id;
+            $result = $mysql->makeQuery($auth_query);
+            $DB_result = $result->fetch_assoc();
+            $_SESSION['USER'] = $DB_result;
+        }
         header('Location: /');
         die();
     }
