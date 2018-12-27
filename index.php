@@ -44,7 +44,7 @@ $tasks_list_query = "SELECT
         tasks.id AS ID,
         tasks.name AS TASK_NAME,
         tasks.deadline_datetime AS TASK_DEADLINE,
-        tasks.status AS TASK_STATUS,
+        tasks.status AS IS_COMPLETED,
         tasks.file_url AS FILE_SRC,
         projects.name AS PROJECT_NAME
         FROM tasks 

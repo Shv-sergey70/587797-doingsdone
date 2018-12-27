@@ -26,7 +26,7 @@ class Tasks
      */
     public function getMenu($user_id)
     {
-        if (empty($this->menu_items)) {
+        if (!isset($this->menu_items)) {
             $all_items_query = "SELECT
             projects.id AS ID,
             projects.name AS NAME,
@@ -34,7 +34,7 @@ class Tasks
             FROM projects
             LEFT JOIN tasks
             ON projects.id = tasks.project_id
-            WHERE projects.author_id = '$user_id'
+            WHERE projects.author_id = $user_id
             GROUP BY projects.id";
             $this->menu_items = $this->DBconnection->getAssocResult($this->DBconnection->makeQuery($all_items_query));
             return $this->menu_items;
@@ -49,5 +49,21 @@ class Tasks
      */
     public function countAllTasks($user_id) {
         return array_sum(array_column($this->getMenu($user_id), 'TASKS_COUNT'));
+    }
+    /**
+     * Определяем, осталось ли до конца задачи менее 24 часов
+     * @param string $deadline
+     * @return bool
+     */
+    public static function isImportantTask(string $deadline): bool {
+        if (\DateTime::createFromFormat('d.m.Y', $deadline)) {
+            $date_task_timestamp = new \DateTime($deadline, new \DateTimeZone('Europe/Moscow'));
+            $date_now_timestamp = new \DateTime('now', new \DateTimeZone('Europe/Moscow'));
+            $interval_timestamp = $date_task_timestamp->getTimestamp()-$date_now_timestamp->getTimestamp();
+            $hours_stay = floor($interval_timestamp/3600);
+            return $hours_stay <= 24;
+        } else {
+            return false;
+        }
     }
 }

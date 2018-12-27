@@ -52,8 +52,8 @@
                                 <span class="main-navigation__list-item-count"><?=$all_tasks_count?></span>
                             </li>
                             <?php foreach($menu_items as $value):?>
-                                <li class="main-navigation__list-item <?=($selected_menu_id === (int)$value['ID'])?'main-navigation__list-item--active':''?>">
-                                    <a class="main-navigation__list-item-link" href="/index.php?project_id=<?=$value['ID']?>"><?=$value['NAME']?></a>
+                                <li class="main-navigation__list-item <?=(isset($selected_menu_id) && $selected_menu_id === (int)$value['ID'])?'main-navigation__list-item--active':''?>">
+                                    <a class="main-navigation__list-item-link" href="/index.php?project_id=<?=$value['ID']?>"><?=htmlspecialchars($value['NAME'], ENT_QUOTES)?></a>
                                     <span class="main-navigation__list-item-count"><?=$value['TASKS_COUNT']?></span>
                                 </li>
                             <?php endforeach;?>

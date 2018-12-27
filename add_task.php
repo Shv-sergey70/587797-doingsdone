@@ -17,6 +17,7 @@ $tasks = new Tasks($mysql);
 
 //Запрашиваем проекты и задачи пользователя по его ID - меню
 $menu_items = $tasks->getMenu($USER['id']);
+
 //Для формы добавления задачи
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $task = $_POST;

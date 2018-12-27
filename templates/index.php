@@ -23,20 +23,19 @@
 <?php else:?>
     <table class="tasks">
         <?php foreach ($current_tasks_items as $value):?>
-            <?php if (!$value['TASK_STATUS'] || (!!$value['TASK_STATUS'] && isset($show_completed_tasks))):?>
-                <tr class="tasks__item task <?=(!!$value['TASK_STATUS'] && isset($show_completed_tasks))?'task--completed':''?> <?=isImportantTask($value['TASK_DEADLINE']??'')?'task--important':''?>">
+            <?php if (!(bool)$value['IS_COMPLETED'] || ((bool)$value['IS_COMPLETED'] && isset($show_completed_tasks))):?>
+                <tr class="tasks__item task <?=((bool)$value['IS_COMPLETED'] && isset($show_completed_tasks))?'task--completed':''?> <?=Doingsdone\Tasks::isImportantTask($value['TASK_DEADLINE']??'')?'task--important':''?>">
                     <td class="task__select">
                         <label class="checkbox task__checkbox">
-                            <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?=$value['ID']?>" <?=(!!$value['TASK_STATUS'] && isset($show_completed_tasks))?'checked':""?>>
+                            <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?=$value['ID']?>" <?=((bool)$value['IS_COMPLETED'] && isset($show_completed_tasks))?'checked':""?>>
                             <span class="checkbox__text"><?=htmlspecialchars($value['TASK_NAME'], ENT_QUOTES)?></span>
                         </label>
                     </td>
-                    <?php if(!empty($value['FILE_SRC'])):?>
                     <td class="task__file">
-                        <a class="download-link" href="<?=$value['FILE_SRC']?>">Прикрепленный файл</a>
+                        <?php if(!empty($value['FILE_SRC'])):?>
+                            <a class="download-link" href="<?=$value['FILE_SRC']?>">Прикрепленный файл</a>
+                        <?php endif;?>
                     </td>
-                    <?php endif;?>
-
                     <td class="task__date"><?=htmlspecialchars($value['TASK_DEADLINE']??'', ENT_QUOTES)?></td>
                 </tr>
             <?php endif;?>
