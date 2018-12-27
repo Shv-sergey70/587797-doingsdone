@@ -3,9 +3,11 @@
 ***
 *Запуск проекта:*
 1.  Клонируйте себе репозиторий следующей командой:
-    >git clone git@github.com:Shv-sergey70/Doingsdone.git
+
+      `git clone git@github.com:Shv-sergey70/Doingsdone.git`
 2.  Подключите внешние библиотеки через Composer командой:
-    >composer install
+    
+    `composer install`
 3.  Создайте схему базы данных - **импортируйте в PhpMyAdmin файл schema.sql**
 4.  Заполните базы данных данными (необязательно) - **импортируйте в PhpMyAdmin файл queries.sql**
 ***
