@@ -56,7 +56,7 @@ class Tasks
      * @return bool
      */
     public static function isImportantTask(string $deadline): bool {
-        if (\DateTime::createFromFormat('d.m.Y', $deadline)) {
+        if (\DateTime::createFromFormat('Y-m-d H:i:s', $deadline)) {
             $date_task_timestamp = new \DateTime($deadline, new \DateTimeZone('Europe/Moscow'));
             $date_now_timestamp = new \DateTime('now', new \DateTimeZone('Europe/Moscow'));
             $interval_timestamp = $date_task_timestamp->getTimestamp()-$date_now_timestamp->getTimestamp();
