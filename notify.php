@@ -1,14 +1,12 @@
 <?php
 
+//Получим время последнего запуска рассылки
 $last_mail_send_datetime = trim(file_get_contents($_SERVER['DOCUMENT_ROOT']."/last_mail_send.txt"));
 
 
 if (time() - strtotime($last_mail_send_datetime) > 3600) {
     // Записываем время последнего запуска скрипта
     file_put_contents($_SERVER['DOCUMENT_ROOT']."/last_mail_send.txt", date('d.m.Y H:i:s'));
-    echo "<pre>";
-    var_dump('Рассылка сработала!');
-    echo "</pre>";
     $expiring_tasks_query = "SELECT
     tasks.name AS TASK_NAME,
     tasks.deadline_datetime AS DEADLINE,
@@ -31,14 +29,16 @@ if (time() - strtotime($last_mail_send_datetime) > 3600) {
     $mailer = new Swift_Mailer($transport);
 
     foreach ($arTasks as $task) {
-        $to = [$task['USER_EMAIL'], 'shv.sergey70@gmail.com'];
-        $body = "Уважаемый, ".$task['USER_NAME'].". У вас запланирована задача '".$task['TASK_NAME']."' на ".$task['DEADLINE'];
+        $to = [$task['USER_EMAIL']];
+        $email_content = include_template('tasks_email.php', [
+            'task' => $task,
+        ]);
         // Create a message
         $message = (new Swift_Message())
             ->setSubject('Уведомление от сервиса «Дела в порядке»')
             ->setFrom(['doingsdone@info.com' => 'Doingsdone'])
             ->setTo($to)
-            ->setBody($body);
+            ->setBody($email_content);
         // Send the message
         $mailer->send($message);
     }
