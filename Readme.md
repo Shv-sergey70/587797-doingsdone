@@ -4,7 +4,7 @@
 *Запуск проекта:*
 1.  Клонируйте себе репозиторий следующей командой:
 
-      `git clone git@github.com:Shv-sergey70/Doingsdone.git`
+      `git clone git@github.com:Shv-sergey70/doingsdone.git`
 2.  Подключите внешние библиотеки через Composer командой:
     
     `composer install`
