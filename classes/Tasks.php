@@ -24,7 +24,7 @@ class Tasks
      * @param $user_id
      * @return array
      */
-    public function getMenu($user_id)
+    public function getMenu(string $user_id)
     {
         if (!isset($this->menu_items)) {
             $all_items_query = "SELECT
@@ -47,7 +47,7 @@ class Tasks
      * @param $user_id
      * @return float|int
      */
-    public function countAllTasks($user_id) {
+    public function countAllTasks(string $user_id) {
         return array_sum(array_column($this->getMenu($user_id), 'TASKS_COUNT'));
     }
     /**

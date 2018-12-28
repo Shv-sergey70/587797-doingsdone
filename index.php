@@ -114,6 +114,9 @@ if (isset($_GET['search'])) {
 }
 $current_tasks_items = [];
 $current_tasks_items = $mysql->getAssocResult($mysql->makeQuery($tasks_list_query));
+
+//Отправка писем
+require_once('notify.php');
 $mysqli->close();
 
 $content = include_template('index.php', [
@@ -122,7 +125,6 @@ $content = include_template('index.php', [
     'task_time_filter' => $_SESSION['task_time_filter']??NULL,
     'search_error' => $search_error??NULL
 ]);
-
 echo include_template('layout.php', [
     'all_tasks_count' => $tasks->countAllTasks($USER['id']),
     'menu_items' => $menu_items,
